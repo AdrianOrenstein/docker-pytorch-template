@@ -30,20 +30,13 @@ ENV PATH="/home/user/.local/bin:${PATH}"
 
 RUN pip3 install --user --no-cache-dir \
     pytorch-lightning \
-    numpy pandas matplotlib seaborn scikit-learn tqdm jupyterlab \
+    numpy pandas matplotlib seaborn scikit-learn tqdm jupyterlab ipywidgets \
     einops flake8-black flake8 isort loguru pytest pytest-benchmark pytest-parallel coverage
 
 # RUN git clone https://github.com/rusty1s/pytorch_scatter.git ~/pytorch_scatter && pip install --user --no-cache-dir -e ~/pytorch_scatter
 
-# RUN pip3 install --user --no-cache-dir redis
-
-# RUN pip3 install --user --no-cache-dir backpack-for-pytorch
-
-# RUN pip3 install --user --no-cache-dir wandb
-# RUN wandb login --relogin "APIKEYHERE"
-# RUN pip3 install --user --no-cache-dir moviepy imageio
-
-RUN pip3 install --user --no-cache-dir ipywidgets
+# RUN pip3 install --user --no-cache-dir redis backpack-for-pytorch wandb moviepy imageio \
+#     && wandb login --relogin "APIKEYHERE"
 
 # install self as module
 COPY setup.py /app/setup.py
