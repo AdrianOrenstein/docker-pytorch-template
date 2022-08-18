@@ -1,0 +1,8 @@
+{
+    "image": "imagename:latest",
+
+	// "runArgs": [
+    //     "--gpus", "all",
+    //     "--ipc", "host",
+    // ],
+}
