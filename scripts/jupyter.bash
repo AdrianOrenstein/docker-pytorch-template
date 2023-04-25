@@ -16,6 +16,6 @@ else
         --gpus all \
         --ipc host \
         -p 8888:8888 \
-        imagename \
+        adrianorenstein/pytorch:2.0.0-cuda11.7-cudnn8-devel \
         jupyter-lab --ip 0.0.0.0 --port 8888 --no-browser --allow-root
 fi

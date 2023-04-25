@@ -19,6 +19,6 @@ else
         -it \
         --gpus all \
         --ipc host \
-        imagename \
+        adrianorenstein/pytorch:2.0.0-cuda11.7-cudnn8-devel \
         /bin/bash -c "${desired_command}"
 fi

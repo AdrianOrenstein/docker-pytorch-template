@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-docker build -t imagename:latest -f dockerfiles/Dockerfile .
+docker build -t adrianorenstein/pytorch:2.0.0-cuda11.7-cudnn8-devell -f dockerfiles/Dockerfile .
