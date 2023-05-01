@@ -40,7 +40,7 @@ ENV PATH="/root/.local/bin:${PATH}"
 ENV PATH="/home/user/.local/bin:${PATH}"
 
 RUN pip3 install --user --no-cache-dir \
-    pytorch-lightning \
+    lightning torchmetrics \
     numpy pandas matplotlib seaborn scikit-learn tqdm jupyterlab ipywidgets \
     einops flake8-black flake8 isort loguru pytest pytest-benchmark pytest-parallel coverage
 
