@@ -15,6 +15,6 @@ else
         -it \
         --gpus all \
         --ipc host \
-        adrianorenstein/pytorch:2.0.0-cuda11.7-cudnn8-devel \
+        adrianorenstein/pytorch:latest \
         /bin/bash
 fi

@@ -1,25 +1,12 @@
-FROM pytorch/pytorch:2.0.0-cuda11.7-cudnn8-devel
+# Use a base image with apt package manager
+FROM python:3.10.11-bullseye
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_RUNNING=true
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    git \
-    wget \
-    curl \
-    unzip \
-    ca-certificates \
-    libopenmpi-dev \
-    sudo \
-    bzip2 \
-    libx11-6 \
-    python3-dev \
-    zlib1g-dev \
-    libglib2.0-0 \
-    x264 && \
-    rm -rf /var/lib/apt/lists/*
+# Update package list and install Python 3
+RUN apt-get update
+RUN apt-get install sudo
 
 # Create a working directory
 RUN mkdir /app
@@ -40,7 +27,7 @@ ENV PATH="/root/.local/bin:${PATH}"
 ENV PATH="/home/user/.local/bin:${PATH}"
 
 RUN pip3 install --user --no-cache-dir \
-    lightning torchmetrics \
+    torch torchvision torchaudio lightning['extra'] torchmetrics \
     numpy pandas matplotlib seaborn scikit-learn tqdm jupyterlab ipywidgets \
     einops flake8-black flake8 isort loguru pytest pytest-benchmark pytest-parallel coverage
 
@@ -54,3 +41,5 @@ COPY setup.py /app/setup.py
 RUN pip3 install --user --no-cache-dir -e /app
 
 CMD [ "/bin/bash" ]
+
+# python 3.12.0a7

@@ -1,5 +1,5 @@
 {
-    "image": "adrianorenstein/pytorch:2.0.0-cuda11.7-cudnn8-devel"
+    "image": "adrianorenstein/pytorch:latest"
     // "runArgs": [
     //     "--gpus", "all",
     //     "--ipc", "host",
