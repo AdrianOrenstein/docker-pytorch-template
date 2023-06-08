@@ -1,5 +1,4 @@
-# Docker project template
-**The default docker container assumes you have a CUDA enabled device - this affects both the base docker image I start from (pytorch:1.11.0-cuda11.3-cudnn8-devel) and that I pass all GPUs in the launch scripts via `--gpus all`.**
+# Docker project template for Apple M1 and Cuda
 
 `make run` launches imagename
 

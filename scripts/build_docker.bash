@@ -1,23 +1,27 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Set the version string
-VERSION="2.0.0-cuda11.7-cudnn8-python3.10.11-devell"
+USERNAME="adrianorenstein"
+IMAGE_NAME="pytorch"
+TEMP_TAG="latest"
+FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TEMP_TAG"
 
-# Prompt the user to ask if they want to push the images to the Docker registry
-read -p "Do you want to push the images to the Docker registry and overwrite 'latest' after building? (y/N): " answer
+# Build the image with a temporary tag
+docker buildx build \
+    --platform "linux/arm64/v8,linux/amd64" \
+    -t $FULL_IMAGE_NAME \
+    -f dockerfiles/Dockerfile . \
+    --push
 
-# Build the Docker image
-docker build -t adrianorenstein/pytorch:$VERSION -f dockerfiles/Dockerfile .
+# Start a Docker container and get Python and PyTorch versions
+PYTHON_VERSION=$(docker run --rm -ti $FULL_IMAGE_NAME python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))' | tr -d '\r')
+TORCH_VERSION=$(docker run --rm -ti $FULL_IMAGE_NAME python -c 'import torch; print(torch.__version__)' | tr -d '\r')
 
-# Tag the image with the 'latest' tag
-docker tag adrianorenstein/pytorch:$VERSION adrianorenstein/pytorch:latest
+# Construct new tag
+NEW_TAG="${TORCH_VERSION}-python${PYTHON_VERSION}-devell"
+FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$NEW_TAG"
 
-if [[ $answer == "y" || $answer == "Y" ]]; then
-    # Push the version-specific image to the Docker registry
-    docker push adrianorenstein/pytorch:$VERSION
-
-    # Push the 'latest' image to the Docker registry
-    docker push adrianorenstein/pytorch:latest
-else
-    echo "Skipping push to Docker registry."
-fi
+docker buildx build \
+    --platform "linux/arm64/v8,linux/amd64" \
+    -t $FULL_IMAGE_NAME \
+    -f dockerfiles/Dockerfile . \
+    --push

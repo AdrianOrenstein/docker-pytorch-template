@@ -41,5 +41,3 @@ COPY setup.py /app/setup.py
 RUN pip3 install --user --no-cache-dir -e /app
 
 CMD [ "/bin/bash" ]
-
-# python 3.12.0a7
