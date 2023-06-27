@@ -7,7 +7,7 @@ FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TEMP_TAG"
 
 # Build the image with a temporary tag
 docker buildx build \
-    --platform "linux/arm64/v8,linux/amd64" \
+    --platform "linux/arm64,linux/amd64" \
     -t $FULL_IMAGE_NAME \
     -f dockerfiles/Dockerfile . \
     --push
@@ -21,7 +21,7 @@ NEW_TAG="${TORCH_VERSION}-python${PYTHON_VERSION}-devell"
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$NEW_TAG"
 
 docker buildx build \
-    --platform "linux/arm64/v8,linux/amd64" \
+    --platform "linux/arm64,linux/amd64" \
     -t $FULL_IMAGE_NAME \
     -f dockerfiles/Dockerfile . \
     --push
