@@ -17,7 +17,7 @@ PYTHON_VERSION=$(docker run --rm -ti $FULL_IMAGE_NAME python -c 'import sys; pri
 TORCH_VERSION=$(docker run --rm -ti $FULL_IMAGE_NAME python -c 'import torch; print(torch.__version__)' | tr -d '\r')
 
 # Construct new tag
-NEW_TAG="${TORCH_VERSION}-python${PYTHON_VERSION}-devell"
+NEW_TAG="${TORCH_VERSION//+/_}-python${PYTHON_VERSION}-devell"
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$NEW_TAG"
 
 docker buildx build \
