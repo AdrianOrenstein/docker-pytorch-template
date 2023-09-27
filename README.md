@@ -30,7 +30,7 @@ RUN pip3 install --user --no-cache-dir -e /app
 CMD [ "/bin/bash" ]
 ```
 
-2. `make build` builds Dockerfile as an image, **ensure you have buildx installed for multi-platform builds** AND **changed the config username to your own**
+1. `make build` builds Dockerfile as an image, **ensure you have buildx installed for multi-platform builds** AND **changed the config username to your own**
 
 
 # FAQs
