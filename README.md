@@ -11,9 +11,26 @@
 
 1. In `config.yaml` change imagename to a new name, or ideally, your image name hosted on dockerhub
 
-1. change the setup.py file project name so something of your own
+1. Change the setup.py file project name so something of your own
 
-1. `make build` builds Dockerfile as an image, **ensure you have buildx installed for multi-platform builds**
+1. Edit `dockerfiles/Dockerfile` to your preference, i.e.:
+
+```Dockerfile
+FROM adrianorenstein/pytorch:latest
+
+# Project specific dependancies 
+RUN pip3 install --user --no-cache-dir \
+    gymnasium[classic-control] \ 
+    swig gymnasium[box2d] 
+
+# install self as module
+COPY setup.py /app/setup.py
+RUN pip3 install --user --no-cache-dir -e /app
+
+CMD [ "/bin/bash" ]
+```
+
+2. `make build` builds Dockerfile as an image, **ensure you have buildx installed for multi-platform builds** AND **changed the config username to your own**
 
 
 # FAQs
