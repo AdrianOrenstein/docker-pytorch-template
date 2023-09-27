@@ -9,11 +9,11 @@
 ## How to setup
 1. Use this repo as a template
 
-1. In `config.yaml` change imagename to a new name, or ideally, your image name hosted on dockerhub
+2. In `config.yaml` change imagename to a new name, or ideally, your image name hosted on dockerhub
 
-1. Change the setup.py file project name so something of your own
+3. Change the setup.py file project name so something of your own
 
-1. Edit `dockerfiles/Dockerfile` to your preference, i.e.:
+4. Edit `dockerfiles/Dockerfile` to your preference, i.e.:
 
 ```Dockerfile
 FROM adrianorenstein/pytorch:latest
@@ -30,7 +30,7 @@ RUN pip3 install --user --no-cache-dir -e /app
 CMD [ "/bin/bash" ]
 ```
 
-1. `make build` builds Dockerfile as an image, **ensure you have buildx installed for multi-platform builds** AND **changed the config username to your own**
+5. `make build` builds Dockerfile as an image, **ensure you have buildx installed for multi-platform builds** AND **changed the config username to your own**
 
 
 # FAQs
