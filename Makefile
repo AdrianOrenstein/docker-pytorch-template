@@ -28,6 +28,3 @@ test:
 
 benchmark:
 	@bash scripts/benchmark.bash
-
-mlflow:
-	@bash scripts/mlflow.bash
