@@ -1,12 +1,12 @@
 # Use a base image with apt package manager
-FROM python:3.10.11-bullseye
+FROM python:3.10.13
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_RUNNING=true
 
 # Update package list and install Python 3
 RUN apt-get update
-RUN apt-get install sudo
+RUN apt-get install -qy sudo
 
 # Create a working directory
 RUN mkdir /app
@@ -29,7 +29,11 @@ ENV PATH="/home/user/.local/bin:${PATH}"
 RUN pip3 install --user --no-cache-dir \
     torch torchvision torchaudio lightning['extra'] torchmetrics \
     numpy pandas matplotlib seaborn scikit-learn tqdm jupyterlab ipywidgets \
-    einops flake8-black flake8 isort loguru pytest pytest-benchmark pytest-parallel coverage
+    einops flake8-black flake8 isort loguru pytest pytest-benchmark pytest-parallel py coverage
+
+# so that containers can parse the config.yaml file
+RUN sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && \
+    sudo chmod +x /usr/bin/yq
 
 # RUN git clone https://github.com/rusty1s/pytorch_scatter.git ~/pytorch_scatter && pip install --user --no-cache-dir -e ~/pytorch_scatter
 
