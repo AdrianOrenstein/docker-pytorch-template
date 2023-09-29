@@ -41,4 +41,7 @@ Go [here](https://www.nvidia.com/download/index.aspx).
 ## How can I store my container so others don't need to build it again?
 Go to [dockerhub](https://hub.docker.com/). This is useful so that others do not need to rebuild the container again with different versions.
 
+# TODO
+- [ ] Make a singularity file. 
+- [ ] Think of a good lightweight profiler for code. 
 
