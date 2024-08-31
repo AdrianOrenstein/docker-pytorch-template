@@ -1,12 +1,11 @@
 # Use a base image with apt package manager
-FROM python:3.10.13
+FROM python:3.12.5
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_RUNNING=true
 
 # Update package list and install Python 3
-RUN apt-get update
-RUN apt-get install -qy sudo
+RUN apt-get update && apt-get install -qy sudo
 
 # Create a working directory
 RUN mkdir /app
@@ -41,7 +40,7 @@ RUN sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_
 #     && wandb login --relogin "APIKEYHERE"
 
 # install self as module
-COPY setup.py /app/setup.py
-RUN pip3 install --user --no-cache-dir -e /app
+# COPY setup.py /app/setup.py
+# RUN pip3 install --user --no-cache-dir -e /app
 
 CMD [ "/bin/bash" ]

@@ -26,7 +26,7 @@ docker buildx install
 # build image for multiple platforms, push latest to docker.io
 docker build \
     -t $FULL_IMAGE_NAME \
-    -f dockerfiles/Dockerfile . \
+    -f dockerfiles/pytorch/Dockerfile . \
     --platform="linux/arm64,linux/amd64" \
     --push
 
@@ -35,7 +35,7 @@ docker build \
 echo loading $FULL_IMAGE_NAME into docker image registry
 docker build \
     -t $FULL_IMAGE_NAME \
-    -f dockerfiles/Dockerfile . \
+    -f dockerfiles/pytorch/Dockerfile . \
     --load
 
 # Get the list of Docker images and search for the specified image
@@ -60,7 +60,7 @@ WITH_VERSIONS_FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$NEW_TAG"
 # build image for multiple platforms, push latest to docker.io
 docker build \
     -t $WITH_VERSIONS_FULL_IMAGE_NAME \
-    -f dockerfiles/Dockerfile . \
+    -f dockerfiles/pytorch/Dockerfile . \
     --platform="linux/arm64,linux/amd64" \
     --push
 
@@ -68,7 +68,7 @@ docker build \
 # you should see the image with "docker image ls"
 docker build \
     -t $WITH_VERSIONS_FULL_IMAGE_NAME \
-    -f dockerfiles/Dockerfile . \
+    -f dockerfiles/pytorch/Dockerfile . \
     --load
 
 
