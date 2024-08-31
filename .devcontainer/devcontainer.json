@@ -1,7 +1,31 @@
 {
-    "image": "adrianorenstein/pytorch:latest"
-    // "runArgs": [
-    //     "--gpus", "all",
-    //     "--ipc", "host",
-    // ],
+    "image": "adrianorenstein/pytorch:latest",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind",
+    "mounts": [
+        "source=${env:HOME}/.netrc,target=/home/user/.netrc,type=bind,consistency=cached"
+    ],
+    "workspaceFolder": "/app",
+    "runArgs": [
+        "--ipc=host"
+        // "--gpus", "all",
+    ],
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "python.analysis.typeCheckingMode": "off",
+                "python.analysis.autoImportCompletions": true,
+                "[python]": {
+                    "editor.defaultFormatter": "ms-python.black-formatter",
+                    "editor.formatOnSave": true
+                }
+            },
+            "extensions": [
+                "donjayamanne.python-extension-pack",
+                "ms-python.black-formatter",
+                "GitHub.copilot",
+                "GitHub.copilot-chat",
+                "ms-azuretools.vscode-docker"
+            ]
+        }
+    }
 }
