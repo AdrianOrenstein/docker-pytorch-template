@@ -20,14 +20,21 @@ export ALL_PROXY=socks5h://localhost:8888
 git config --global http.proxy $ALL_PROXY
 git clone --quiet https://github.com/AdrianOrenstein/docker-pytorch-template.git $SLURM_TMPDIR/project
 
-# sanity check
+# sanity check we have access to the pip packages
 apptainer run \
     --env ALL_PROXY=$ALL_PROXY \
     --env APPEND_PATH=$SLURM_TMPDIR/project \
     $SLURM_TMPDIR/$IMAGE_NAME python -c "import torch, minigrid; print(f'{torch.__version__=}\t{minigrid.__version__=}')"
 
+# check that we can use torch on the GPU
 apptainer run \
     --nv \
     --env ALL_PROXY=$ALL_PROXY \
     --env APPEND_PATH=$SLURM_TMPDIR/project \
     $SLURM_TMPDIR/$IMAGE_NAME python -c "import torch; a=torch.ones(50).cuda(); out=(a+a)*2; print(out.shape, out)"
+
+# check that we can run python modules on the cloned repo
+apptainer run \
+    --env ALL_PROXY=$ALL_PROXY \
+    --env APPEND_PATH=$SLURM_TMPDIR/project \
+    $SLURM_TMPDIR/$IMAGE_NAME python -m black $SLURM_TMPDIR/project
