@@ -18,7 +18,7 @@ export ALL_PROXY=socks5h://localhost:8888
 
 # clone an example repo
 git config --global http.proxy $ALL_PROXY
-git clone --quiet https://github.com/AdrianOrenstein/async-mdp.git $SLURM_TMPDIR/project
+git clone --quiet https://github.com/AdrianOrenstein/docker-pytorch-template.git $SLURM_TMPDIR/project
 
 # sanity check
 apptainer run \
