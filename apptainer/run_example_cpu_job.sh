@@ -14,9 +14,8 @@ export ALL_PROXY=socks5h://localhost:8888
 
 # clone an example repo
 git config --global http.proxy $ALL_PROXY
-git clone --quiet https://github.com/AdrianOrenstein/async-mdp.git $SLURM_TMPDIR/project
+git clone --quiet https://github.com/AdrianOrenstein/docker-pytorch-template.git $SLURM_TMPDIR/project
 
-# sanity check
 apptainer run \
     --env ALL_PROXY=$ALL_PROXY \
     --env APPEND_PATH=$SLURM_TMPDIR/project \
@@ -30,4 +29,4 @@ apptainer run \
 apptainer run \
     --env ALL_PROXY=$ALL_PROXY \
     --env APPEND_PATH=$SLURM_TMPDIR/project \
-    $SLURM_TMPDIR/$IMAGE_NAME python $SLURM_TMPDIR/project/src/minigrid_experiments/maze.py
+    $SLURM_TMPDIR/$IMAGE_NAME python -m black $SLURM_TMPDIR/project
