@@ -1,3 +1,15 @@
-USERNAME: "adrianorenstein"
-IMAGE_NAME: "pytorch"
-TAG: "latest"
+common:
+  USERNAME: "adrianorenstein"
+
+images:
+  pytorch:
+    IMAGE_NAME: "pytorch"
+    TAG: "latest"
+  
+  minigrid:
+    IMAGE_NAME: "minigrid_pytorch"
+    TAG: "latest"
+  
+  atari:
+    IMAGE_NAME: "atari_pytorch"
+    TAG: "latest"

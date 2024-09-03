@@ -13,10 +13,13 @@ then
     exit 1
 fi
 
-# Parse the values from the config.yaml file
-USERNAME=$(yq e '.USERNAME' config.yaml)
-IMAGE_NAME=$(yq e '.IMAGE_NAME' config.yaml)
-TAG=$(yq e '.TAG' config.yaml)
+# Specify the image type (pytorch, minigrid, or atari) as a script argument
+IMAGE_TYPE=$1
+
+# Parse the values from the combined config.yaml file
+USERNAME=$(yq e '.common.USERNAME' config.yaml)
+IMAGE_NAME=$(yq e ".images.$IMAGE_TYPE.IMAGE_NAME" config.yaml)
+TAG=$(yq e ".images.$IMAGE_TYPE.TAG" config.yaml)
 
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
 
@@ -26,7 +29,7 @@ docker buildx install
 # build image for multiple platforms, push latest to docker.io
 docker build \
     -t $FULL_IMAGE_NAME \
-    -f dockerfiles/pytorch/Dockerfile . \
+    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
     --platform="linux/arm64,linux/amd64" \
     --push
 
@@ -35,7 +38,7 @@ docker build \
 echo loading $FULL_IMAGE_NAME into docker image registry
 docker build \
     -t $FULL_IMAGE_NAME \
-    -f dockerfiles/pytorch/Dockerfile . \
+    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
     --load
 
 # Get the list of Docker images and search for the specified image
@@ -60,7 +63,7 @@ WITH_VERSIONS_FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$NEW_TAG"
 # build image for multiple platforms, push latest to docker.io
 docker build \
     -t $WITH_VERSIONS_FULL_IMAGE_NAME \
-    -f dockerfiles/pytorch/Dockerfile . \
+    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
     --platform="linux/arm64,linux/amd64" \
     --push
 
@@ -68,7 +71,7 @@ docker build \
 # you should see the image with "docker image ls"
 docker build \
     -t $WITH_VERSIONS_FULL_IMAGE_NAME \
-    -f dockerfiles/pytorch/Dockerfile . \
+    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
     --load
 
 

@@ -4,7 +4,13 @@ PIP = pip3
 .DEFAULT_GOAL = run
 
 build:
-	@bash scripts/build_docker.bash
+	@bash scripts/build_docker.bash pytorch
+
+build_atari:
+	@bash scripts/build_docker.bash atari
+
+build_minigrid:
+	@bash scripts/build_docker.bash minigrid
 
 run:
 	@bash scripts/run.bash $(filter-out $@, $(MAKECMDGOALS))
