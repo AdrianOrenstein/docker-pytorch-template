@@ -14,9 +14,9 @@ then
 fi
 
 # Parse the values from the config.yaml file
-USERNAME=$(yq e '.USERNAME' config.yaml)
-IMAGE_NAME=$(yq e '.IMAGE_NAME' config.yaml)
-TAG=$(yq e '.TAG' config.yaml)
+USERNAME=$(yq e '.common.USERNAME' config.yaml)
+IMAGE_NAME=$(yq e '.images.pytorch.IMAGE_NAME' config.yaml)
+TAG=$(yq e '.images.pytorch.TAG' config.yaml)
 
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
 
