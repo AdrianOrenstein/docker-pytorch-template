@@ -13,10 +13,14 @@ then
     exit 1
 fi
 
+# Specify the image type (pytorch, minigrid, or atari) as a script argument
+IMAGE_TYPE=$1
+shift # Shift to allow additional command arguments after IMAGE_TYPE
+
 # Parse the values from the config.yaml file
 USERNAME=$(yq e '.common.USERNAME' config.yaml)
-IMAGE_NAME=$(yq e '.images.pytorch.IMAGE_NAME' config.yaml)
-TAG=$(yq e '.images.pytorch.TAG' config.yaml)
+IMAGE_NAME=$(yq e ".images.$IMAGE_TYPE.IMAGE_NAME" config.yaml)
+TAG=$(yq e ".images.$IMAGE_TYPE.TAG" config.yaml)
 
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
 
@@ -30,6 +34,13 @@ else
     # Set volumes
     cmp_volumes="--volume=$(pwd):/app/:rw"
 
+    # Capture the command or default to /bin/bash
+    if [ "$#" -gt 0 ]; then
+        command="$@"
+    else
+        command="/bin/bash"
+    fi
+
     # Check OS type
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OSX
@@ -38,7 +49,7 @@ else
             --ipc host \
             -w /app \
             $FULL_IMAGE_NAME \
-            /bin/bash
+            /bin/bash -c "$command"
     else
         # Other OS (assuming Linux)
         docker run --rm -it \
@@ -47,6 +58,6 @@ else
             --ipc host \
             -w /app \
             $FULL_IMAGE_NAME \
-            /bin/bash
+            /bin/bash -c "$command"
     fi
 fi

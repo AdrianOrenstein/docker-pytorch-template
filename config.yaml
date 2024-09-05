@@ -13,3 +13,7 @@ images:
   atari:
     IMAGE_NAME: "atari_pytorch"
     TAG: "latest"
+
+  apptainer:
+    IMAGE_NAME: "apptainer"
+    TAG: "latest"

@@ -4,20 +4,15 @@ PIP = pip3
 .DEFAULT_GOAL = run
 
 build:
-	@bash scripts/build_docker.bash pytorch
-
-build_atari:
-	@bash scripts/build_docker.bash atari
-
-build_minigrid:
-	@bash scripts/build_docker.bash minigrid
+	# pytorch, atari, minigrid, apptainer
+	@bash scripts/build_docker.bash $(filter-out $@, $(MAKECMDGOALS))
 
 run:
 	@bash scripts/run.bash $(filter-out $@, $(MAKECMDGOALS))
 
 # build and run
 runblt: build lint test
-	@bash scripts/run.bash $(filter-out $@, $(MAKECMDGOALS))
+	@bash scripts/run.bash pytorch $(filter-out $@, $(MAKECMDGOALS))
 
 stop:
 	@docker container kill $$(docker ps -q)
@@ -34,3 +29,4 @@ test:
 
 benchmark:
 	@bash scripts/benchmark.bash
+
