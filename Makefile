@@ -4,29 +4,32 @@ PIP = pip3
 .DEFAULT_GOAL = run
 
 build:
-	# pytorch, atari, minigrid, apptainer
-	@bash scripts/build_docker.bash $(filter-out $@, $(MAKECMDGOALS))
+	@if [ "$(filter apptainer,$(MAKECMDGOALS))" ]; then \
+		./scripts/build_apptainer.sh $(filter-out $@,$(MAKECMDGOALS)); \
+	else \
+		./scripts/build_docker.sh $(filter-out $@,$(MAKECMDGOALS)); \
+	fi
 
 run:
-	@bash scripts/run.bash $(filter-out $@, $(MAKECMDGOALS))
+	./scripts/run.sh $(filter-out $@, $(MAKECMDGOALS))
 
 # build and run
 runblt: build lint test
-	@bash scripts/run.bash pytorch $(filter-out $@, $(MAKECMDGOALS))
+	./scripts/run.sh pytorch $(filter-out $@, $(MAKECMDGOALS))
 
 stop:
 	@docker container kill $$(docker ps -q)
 
 jupyter:
-	@bash scripts/jupyter.bash
+	./scripts/jupyter.sh
 
 lint:
-	@bash scripts/lint.bash
+	./scripts/lint.sh
 	@echo "✅✅✅✅✅ Lint is good! ✅✅✅✅✅"
 
 test:
-	@bash scripts/test.bash
+	./scripts/test.sh
 
 benchmark:
-	@bash scripts/benchmark.bash
+	./scripts/benchmark.sh
 
