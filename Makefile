@@ -33,3 +33,6 @@ test:
 benchmark:
 	./scripts/benchmark.sh
 
+%:
+	@:
+
