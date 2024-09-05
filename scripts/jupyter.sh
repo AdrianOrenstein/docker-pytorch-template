@@ -43,7 +43,6 @@ else
         docker run --rm -it \
             $cmp_volumes \
             -w /app/ \
-            -it \
             --ipc host \
             -p 8888:8888 \
             $FULL_IMAGE_NAME \
@@ -53,7 +52,6 @@ else
         docker run --rm -it \
             $cmp_volumes \
             -w /app/ \
-            -it \
             --gpus all \
             --ipc host \
             -p 8888:8888 \
