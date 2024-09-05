@@ -43,14 +43,15 @@ else
         # Mac OS X
         docker run --rm -it \
             $cmp_volumes \
+            -w /app/ \
             --ipc host \
             $FULL_IMAGE_NAME \
             /bin/bash -c "${run_coverage_report_cmd}"
     else
         # Other OS (assuming Linux)
-        docker run --rm -ti \
+        docker run --rm -it \
             $cmp_volumes \
-            -it \
+            -w /app/ \
             --gpus all \
             --ipc host \
             $FULL_IMAGE_NAME \

@@ -40,8 +40,9 @@ else
     # Check OS type
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OS X
-        docker run --rm -ti \
+        docker run --rm -it \
             $cmp_volumes \
+            -w /app/ \
             -it \
             --ipc host \
             -p 8888:8888 \
@@ -49,8 +50,9 @@ else
             /bin/bash -c "$run_jupyter_cmd"
     else
         # Other OS (assuming Linux)
-        docker run --rm -ti \
+        docker run --rm -it \
             $cmp_volumes \
+            -w /app/ \
             -it \
             --gpus all \
             --ipc host \

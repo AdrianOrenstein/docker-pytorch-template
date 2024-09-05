@@ -46,17 +46,17 @@ else
         # Mac OSX
         docker run --rm -it \
             $cmp_volumes \
-            --ipc host \
             -w /app \
+            --ipc host \
             $FULL_IMAGE_NAME \
             /bin/bash -c "$command"
     else
         # Other OS (assuming Linux)
         docker run --rm -it \
             $cmp_volumes \
+            -w /app \
             --gpus all \
             --ipc host \
-            -w /app \
             $FULL_IMAGE_NAME \
             /bin/bash -c "$command"
     fi
