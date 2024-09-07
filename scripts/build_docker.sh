@@ -22,24 +22,26 @@ IMAGE_NAME=$(yq e ".images.$IMAGE_TYPE.IMAGE_NAME" config.yaml)
 TAG=$(yq e ".images.$IMAGE_TYPE.TAG" config.yaml)
 
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
+echo "Building image $FULL_IMAGE_NAME"
 
 # make sure buildx is installed, and alias "docker build" to "docker buildx"
 docker buildx install 
+
+PLATFORMS=$(yq e ".images.$IMAGE_TYPE.PLATFORMS" config.yaml)
+echo "Building for platforms: $PLATFORMS"
 
 # build image for multiple platforms, push latest to docker.io
 docker build \
     -t $FULL_IMAGE_NAME \
     -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
-    --platform="linux/arm64,linux/amd64" \
-    --push
+    --platform="$PLATFORMS" \
+    --push --load
 
-# and then load image into local registry
-# you should see the image with "docker image ls" 
-echo loading $FULL_IMAGE_NAME into docker image registry
-docker build \
-    -t $FULL_IMAGE_NAME \
-    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
-    --load
+# Check if the docker build command failed and exit if so
+if [ $? -ne 0 ]; then
+    echo "Docker build failed. Exiting."
+    exit 1
+fi
 
 # Get the list of Docker images and search for the specified image
 IMAGE_FOUND=$(docker image ls | grep "$USERNAME/$IMAGE_NAME")
@@ -64,14 +66,8 @@ WITH_VERSIONS_FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$NEW_TAG"
 docker build \
     -t $WITH_VERSIONS_FULL_IMAGE_NAME \
     -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
-    --platform="linux/arm64,linux/amd64" \
-    --push
-
-# and then load image into local registry
-# you should see the image with "docker image ls"
-docker build \
-    -t $WITH_VERSIONS_FULL_IMAGE_NAME \
-    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
-    --load
+    --platform="$PLATFORMS" \
+    --push --load
+    
 
 
