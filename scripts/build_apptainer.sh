@@ -14,20 +14,21 @@ FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
 DOCKERFILE_PATH="dockerfiles/$IMAGE_TYPE/Dockerfile"
 echo "Building with Dockerfile: $DOCKERFILE_PATH"
 
+PLATFORMS=$(yq e ".images.$IMAGE_TYPE.PLATFORMS" config.yaml)
+echo "Building for platforms: $PLATFORMS"
+
 # make sure buildx is installed, and alias "docker build" to "docker buildx"
 docker buildx install 
 
 # build image for multiple platforms, push latest to docker.io
-docker build \
-    -t $FULL_IMAGE_NAME \
-    -f dockerfiles/$IMAGE_TYPE/Dockerfile . \
-    --platform="linux/arm64,linux/amd64" \
+docker buildx build -t $FULL_IMAGE_NAME \
+    --platform="$PLATFORMS" \
+    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
     --push
 
 # and then load image into local registry
 # you should see the image with "docker image ls" 
 echo loading $FULL_IMAGE_NAME into docker image registry
-docker build \
-    -t $FULL_IMAGE_NAME \
+docker build -t $FULL_IMAGE_NAME \
     -f dockerfiles/$IMAGE_TYPE/Dockerfile . \
     --load

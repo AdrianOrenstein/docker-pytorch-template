@@ -1,6 +1,6 @@
 ARG PLATFORM
 ARG base_image=python:3.11.9
-FROM ${base_image}
+FROM --platform=${PLATFORM:-linux/amd64} ${base_image}
 
 RUN pip install \
     ale-py==0.8.1 \
