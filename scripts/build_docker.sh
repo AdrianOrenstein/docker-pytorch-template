@@ -30,44 +30,31 @@ docker buildx install
 PLATFORMS=$(yq e ".images.$IMAGE_TYPE.PLATFORMS" config.yaml)
 echo "Building for platforms: $PLATFORMS"
 
-# build image for multiple platforms, push latest to docker.io
+# Build image for multiple platforms
+docker buildx build -t $FULL_IMAGE_NAME \
+    --platform="$PLATFORMS" \
+    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
+    --push
+
+# after this you should see the image with "docker image ls" 
+echo loading $FULL_IMAGE_NAME into docker image registry
 docker build \
     -t $FULL_IMAGE_NAME \
     -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
-    --platform="$PLATFORMS" \
-    --push --load
+    --load
 
-# Check if the docker build command failed and exit if so
-if [ $? -ne 0 ]; then
-    echo "Docker build failed. Exiting."
-    exit 1
-fi
-
-# Get the list of Docker images and search for the specified image
-IMAGE_FOUND=$(docker image ls | grep "$USERNAME/$IMAGE_NAME")
-
-# Check whether the specified image was found
-if [[ -n $IMAGE_FOUND ]]; then
-    echo "An image $USERNAME/$IMAGE_NAME was found in image registry."
-else
-    echo "An image $USERNAME/$IMAGE_NAME was not found, there is an issue :("
-    exit 1
-fi
-
-# # Start a Docker container and get Python and PyTorch versions
-PYTHON_VERSION=$(docker run --rm -ti $FULL_IMAGE_NAME python -c 'import sys; print(".".join(map(str, sys.version_info[:3])), end="")')
-TORCH_VERSION=$(docker run --rm -ti $FULL_IMAGE_NAME python -c 'import torch; print(torch.__version__, end="")')
-
-# Construct image tag with python and torch version
+PYTHON_VERSION=$(docker run --rm $FULL_IMAGE_NAME python -c 'import sys; print(".".join(map(str, sys.version_info[:3])), end="")')
+TORCH_VERSION=$(docker run --rm $FULL_IMAGE_NAME python -c 'import torch; print(torch.__version__, end="")')
 NEW_TAG="${TORCH_VERSION//+/_}-python${PYTHON_VERSION}-devell"
-WITH_VERSIONS_FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$NEW_TAG"
+FULL_IMAGE_WITH_VERSIONS="$USERNAME/$IMAGE_NAME:$NEW_TAG"
 
 # build image for multiple platforms, push latest to docker.io
-docker build \
-    -t $WITH_VERSIONS_FULL_IMAGE_NAME \
-    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
+docker build -t $FULL_IMAGE_WITH_VERSIONS \
     --platform="$PLATFORMS" \
-    --push --load
-    
+    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
+    --push
 
-
+# you should see the pytorch and python tagged image with "docker image ls"
+docker build -t $FULL_IMAGE_WITH_VERSIONS \
+    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
+    --load

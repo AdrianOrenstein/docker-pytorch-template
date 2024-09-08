@@ -1,5 +1,5 @@
 # Use a base image with apt package manager
-FROM python:3.12.5
+FROM python:3.11.9
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_RUNNING=true

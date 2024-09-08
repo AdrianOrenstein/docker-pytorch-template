@@ -1,5 +1,7 @@
 # Docker project template
 
+`make build pytorch && make build atari && pytest && echo "done!"`
+
 `docker pull adrianorenstein/pytorch:latest` pulls the latest pytorch image i've made
 
 `make run <img_type>` launches imagename in config.yaml, try: `apptainer`, `pytorch`, `minigrid`, `atari`
