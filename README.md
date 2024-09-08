@@ -34,7 +34,6 @@ make build apptainer && \
     docker pull --platform linux/amd64 adrianorenstein/pytorch:latest && \
     docker save -o pytorch_amd64.tar adrianorenstein/pytorch:latest && \
     make run apptainer apptainer build pytorch_amd64.sif docker-archive://pytorch_amd64.tar
-
 # apptainer run ./pytorch_amd64.sif python apptainer_images/benchmark_mmul.py
 # Average time: 3.886498 seconds
 # Standard deviation: 0.018760 seconds
