@@ -1,47 +1,48 @@
-# Docker project template for Apple M1 and Cuda
+# Docker project template
+
+`make build pytorch && make build atari && pytest tests/test_atari_docker_img.py tests/test_pytorch_docker_img.py && echo "done"`
 
 `docker pull adrianorenstein/pytorch:latest` pulls the latest pytorch image i've made
 
-`make run` launches imagename in config.yaml
+`make run <img_type>` launches imagename in config.yaml, try: `apptainer`, `pytorch`, `minigrid`, `atari`
 
-`make jupyter` launches jupyter-lab 
+`make jupyter` launches jupyter-lab
 
-## How to setup
-1. Use this repo as a template
+## Build apptainer images from dockerhub images
+`make run apptainer apptainer pull docker://adrianorenstein/pytorch:pytorch_2.4.0-python3.12.5-devell`
 
-2. In `config.yaml` change imagename to a new name, or ideally, your image name hosted on dockerhub
-
-3. Change the setup.py file project name so something of your own
-
-4. Edit `dockerfiles/Dockerfile` to your preference, i.e.:
-
-```Dockerfile
-FROM adrianorenstein/pytorch:latest
-
-# Project specific dependancies 
-RUN pip3 install --user --no-cache-dir \
-    gymnasium[classic-control] \ 
-    swig gymnasium[box2d] 
-
-# install self as module
-COPY setup.py /app/setup.py
-RUN pip3 install --user --no-cache-dir -e /app
-
-CMD [ "/bin/bash" ]
-```
-
-5. `make build` builds Dockerfile as an image, **ensure you have buildx installed for multi-platform builds** AND **changed the config username to your own**
-
-
-# FAQs
-
-## How do I install NVIDIA-CUDA drivers for my host machine?
-Go [here](https://www.nvidia.com/download/index.aspx).
-
-## How can I store my container so others don't need to build it again?
-Go to [dockerhub](https://hub.docker.com/). This is useful so that others do not need to rebuild the container again with different versions.
+Move it to a CC cluster via `scp ./pytorch_2.4.0-python3.12.5-devell.sif <USER>@beluga.alliancecan.ca:/project/<GROUP>/<USER>/`, for more info [go here](https://docs.alliancecan.ca/mediawiki/index.php?title=Transferring_data).
 
 # TODO
-- [ ] Make a singularity file. 
-- [ ] Think of a good lightweight profiler for code. 
+- [ ] Make a bash script to pull a dockerhub image, pip freeze, and build the wheels using [build_wheel.sh](https://github.com/ComputeCanada/wheels_builder?tab=readme-ov-file#build_wheelsh). Then, build a sif with these wheels.
 
+
+# Other architectures?
+https://github.com/docker-library/official-images#architectures-other-than-amd64
+
+# SIF
+converting into apptainer sifs
+```bash
+
+apptainer pull docker://adrianorenstein/atari_pytorch:latest
+# apptainer run ./converted_on_cluster_atari_pytorch_latest.sif python apptainer_images/benchmark_mmul.py
+# Average time: 3.882581 seconds
+# Standard deviation: 0.039912 seconds
+
+echo "building sif files"
+make build apptainer && \
+    docker pull --platform linux/amd64 adrianorenstein/pytorch:latest && \
+    docker save -o pytorch_amd64.tar adrianorenstein/pytorch:latest && \
+    make run apptainer apptainer build pytorch_amd64.sif docker-archive://pytorch_amd64.tar
+# apptainer run ./pytorch_amd64.sif python apptainer_images/benchmark_mmul.py
+# Average time: 3.886498 seconds
+# Standard deviation: 0.018760 seconds
+
+apptainer run ./atari_pytorch_amd64.sif python apptainer_images/benchmark_mmul.py
+# Average time: 3.889686 seconds
+# Standard deviation: 0.046351 seconds
+apptainer run ./pytorch_amd64.sif python apptainer_images/benchmark_mmul.py
+# Average time: 3.882812 seconds
+# Standard deviation: 0.008093 seconds
+
+```

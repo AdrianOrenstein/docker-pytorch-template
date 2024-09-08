@@ -14,37 +14,48 @@ then
 fi
 
 # Parse the values from the config.yaml file
-USERNAME=$(yq e '.USERNAME' config.yaml)
-IMAGE_NAME=$(yq e '.IMAGE_NAME' config.yaml)
-TAG=$(yq e '.TAG' config.yaml)
+USERNAME=$(yq e '.common.USERNAME' config.yaml)
+IMAGE_NAME=$(yq e '.images.pytorch.IMAGE_NAME' config.yaml)
+TAG=$(yq e '.images.pytorch.TAG' config.yaml)
 
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
+
+function run_jupyter {
+    jupyter-lab --ip 0.0.0.0 --port 8888 --no-browser --allow-root
+}
 
 # Check if Docker is running
 if [ "$DOCKER_RUNNING" == true ]
 then
-    echo "Already inside docker instance, I don't know why you'd want to nest terminals?"
+    echo "Inside docker instance"
+    run_jupyter
 else
     echo "Starting up docker instance..."
+
+    run_jupyter_cmd=$(declare -f run_jupyter); run_jupyter_cmd+="; run_jupyter"
 
     # Set volumes
     cmp_volumes="--volume=$(pwd):/app/:rw"
 
     # Check OS type
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        # Mac OSX
+        # Mac OS X
         docker run --rm -it \
             $cmp_volumes \
+            -w /app/ \
             --ipc host \
+            -p 8888:8888 \
             $FULL_IMAGE_NAME \
-            /bin/bash
+            /bin/bash -c "$run_jupyter_cmd"
     else
         # Other OS (assuming Linux)
         docker run --rm -it \
             $cmp_volumes \
+            -w /app/ \
             --gpus all \
             --ipc host \
+            -p 8888:8888 \
             $FULL_IMAGE_NAME \
-            /bin/bash
+            /bin/bash -c "$run_jupyter_cmd"
     fi
 fi
