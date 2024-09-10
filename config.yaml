@@ -2,22 +2,32 @@ common:
   USERNAME: "adrianorenstein"
 
 images:
+  jax:
+    IMAGE_NAME: "jax"
+    TAG: "latest"
+    PLATFORMS: "linux/amd64,linux/arm64"
+    DOCKERFILE_LOCATION: "dockerfiles/ml/jax"
+
   pytorch:
     IMAGE_NAME: "pytorch"
     TAG: "latest"
     PLATFORMS: "linux/amd64,linux/arm64"
+    DOCKERFILE_LOCATION: "dockerfiles/ml/pytorch"
   
   minigrid:
     IMAGE_NAME: "minigrid_pytorch"
     TAG: "latest"
     PLATFORMS: "linux/amd64,linux/arm64"
+    DOCKERFILE_LOCATION: "dockerfiles/env/minigrid"
   
   atari:
     IMAGE_NAME: "atari_pytorch"
     TAG: "latest"
     PLATFORMS: "linux/amd64"
+    DOCKERFILE_LOCATION: "dockerfiles/env/atari"
 
   apptainer:
     IMAGE_NAME: "apptainer"
     TAG: "latest"
     PLATFORMS: "linux/amd64,linux/arm64"
+    DOCKERFILE_LOCATION: "dockerfiles/apptainer"
