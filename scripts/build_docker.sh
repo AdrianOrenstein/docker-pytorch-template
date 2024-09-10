@@ -20,6 +20,7 @@ IMAGE_TYPE=$1
 USERNAME=$(yq e '.common.USERNAME' config.yaml)
 IMAGE_NAME=$(yq e ".images.$IMAGE_TYPE.IMAGE_NAME" config.yaml)
 TAG=$(yq e ".images.$IMAGE_TYPE.TAG" config.yaml)
+DOCKERFILE_LOCATION=$(yq e ".images.$IMAGE_TYPE.DOCKERFILE_LOCATION" config.yaml)
 
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
 echo "Building image $FULL_IMAGE_NAME"
@@ -33,14 +34,14 @@ echo "Building for platforms: $PLATFORMS"
 # Build image for multiple platforms
 docker buildx build -t $FULL_IMAGE_NAME \
     --platform="$PLATFORMS" \
-    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
+    -f ${DOCKERFILE_LOCATION}/Dockerfile . \
     --push
 
 # after this you should see the image with "docker image ls" 
 echo loading $FULL_IMAGE_NAME into docker image registry
 docker build \
     -t $FULL_IMAGE_NAME \
-    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
+    -f ${DOCKERFILE_LOCATION}/Dockerfile . \
     --load
 
 PYTHON_VERSION=$(docker run --rm $FULL_IMAGE_NAME python -c 'import sys; print(".".join(map(str, sys.version_info[:3])), end="")')
@@ -51,10 +52,10 @@ FULL_IMAGE_WITH_VERSIONS="$USERNAME/$IMAGE_NAME:$NEW_TAG"
 # build image for multiple platforms, push latest to docker.io
 docker build -t $FULL_IMAGE_WITH_VERSIONS \
     --platform="$PLATFORMS" \
-    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
+    -f ${DOCKERFILE_LOCATION}/Dockerfile . \
     --push
 
 # you should see the pytorch and python tagged image with "docker image ls"
 docker build -t $FULL_IMAGE_WITH_VERSIONS \
-    -f dockerfiles/${IMAGE_TYPE}/Dockerfile . \
+    -f ${DOCKERFILE_LOCATION}/Dockerfile . \
     --load
