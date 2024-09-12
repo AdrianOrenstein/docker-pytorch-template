@@ -20,6 +20,18 @@ Move it to a CC cluster via `scp ./pytorch_2.4.0-python3.12.5-devell.sif <USER>@
 # Other architectures?
 https://github.com/docker-library/official-images#architectures-other-than-amd64
 
+
+# didn't work
+docker pull improbableailab/dopamine_atari:latest && \
+docker save -o dopamine_jax_amd64.tar improbableailab/dopamine_atari:latest && \
+    make run apptainer apptainer build dopamine_jax_amd64.sif docker-archive://dopamine_jax_amd64.tar
+
+# maybe?
+docker pull massaudev/dopamine:latest && \
+docker save -o dopamine_jax_amd64_massaudev.tar massaudev/dopamine:latest && \   
+    make run apptainer apptainer build dopamine_jax_amd64_massaudev.sif docker-archive://dopamine_jax_amd64_massaudev.tar
+
+
 # SIF
 converting into apptainer sifs
 ```bash

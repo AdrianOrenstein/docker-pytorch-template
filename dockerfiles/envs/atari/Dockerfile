@@ -7,6 +7,6 @@ RUN pip install \
     gymnasium[atari] \
     gymnasium[accept-rom-license] \
     MinAtar \
-    opencv-python
+    opencv-python-headless
 
 CMD [ "/bin/bash" ]
