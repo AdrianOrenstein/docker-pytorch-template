@@ -5,12 +5,12 @@ images:
   pytorch:
     IMAGE_NAME: "pytorch"
     TAG: "latest"
-    PLATFORMS: "linux/amd64,linux/arm64"
+    PLATFORMS: "linux/amd64"
   
   minigrid:
     IMAGE_NAME: "minigrid_pytorch"
     TAG: "latest"
-    PLATFORMS: "linux/amd64,linux/arm64"
+    PLATFORMS: "linux/amd64"
   
   atari:
     IMAGE_NAME: "atari_pytorch"
@@ -20,4 +20,4 @@ images:
   apptainer:
     IMAGE_NAME: "apptainer"
     TAG: "latest"
-    PLATFORMS: "linux/amd64,linux/arm64"
+    PLATFORMS: "linux/amd64"
