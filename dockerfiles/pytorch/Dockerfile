@@ -1,5 +1,4 @@
-# Use a base image with apt package manager
-FROM python:3.11.9
+FROM python:3.13
 
 ARG DEBIAN_FRONTEND=noninteractive
 ENV DOCKER_RUNNING=true
@@ -9,18 +8,26 @@ RUN apt-get update && \
     apt-get install rpm2cpio cpio -y && \
     curl -s https://raw.githubusercontent.com/apptainer/apptainer/main/tools/install-unprivileged.sh | \
     bash -s - install-dir && \
-    wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && \
-    chmod +x /usr/bin/yq && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN pip install \
-    torch einops \
-    numpy pandas matplotlib seaborn scikit-learn tqdm loguru jupyterlab ipywidgets \
+    torch torchvision torchrl tensordict einops \
+    numpy opt_einsum numba \
+    pandas matplotlib seaborn scikit-learn jupyterlab ipywidgets \
+    tyro tqdm loguru \
+    ruff pre-commit \
     flake8-black flake8 isort \
     pytest pytest-benchmark pytest-parallel py coverage \
-    redis wandb moviepy imageio pysocks 'requests[socks]' 
+    redis wandb moviepy imageio pysocks 'requests[socks]' \
+    lightning wandb lightning-bolts
 
-# wandb login --relogin "APIKEYHERE"
+RUN git config --global --add safe.directory /app
+
+ENV PYTHONPATH="/app/"
+
+RUN useradd -u 1000 -m ubuntu
+WORKDIR /app
+USER ubuntu
 
 CMD [ "/bin/bash" ]

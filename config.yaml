@@ -1,14 +1,18 @@
 common:
+  REGISTRY: "docker.io"
   USERNAME: "adrianorenstein"
-
+  IMAGE_NAME: "pytorch"
+  TAG: "latest"
+  PLATFORMS: "linux/amd64"
 images:
   pytorch:
     IMAGE_NAME: "pytorch"
     TAG: "latest"
     PLATFORMS: "linux/amd64"
-  
-  minigrid:
-    IMAGE_NAME: "minigrid_pytorch"
+    TAG_PYTORCH: True
+
+  cuda_pytorch:
+    IMAGE_NAME: "cuda_pytorch"
     TAG: "latest"
     PLATFORMS: "linux/amd64"
   

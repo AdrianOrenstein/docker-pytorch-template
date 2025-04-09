@@ -9,22 +9,25 @@
         "--ipc=host"
         // "--gpus", "all",
     ],
+    "containerEnv": {
+        "SHELL": "/bin/bash"
+    },
     "customizations": {
         "vscode": {
             "settings": {
                 "python.analysis.typeCheckingMode": "off",
                 "python.analysis.autoImportCompletions": true,
                 "[python]": {
-                    "editor.defaultFormatter": "ms-python.black-formatter",
-                    "editor.formatOnSave": true
+                    "editor.formatOnSave": true,
+                    "editor.defaultFormatter": "charliermarsh.ruff"
                 }
             },
             "extensions": [
                 "donjayamanne.python-extension-pack",
-                "ms-python.black-formatter",
-                "GitHub.copilot",
-                "GitHub.copilot-chat",
-                "ms-azuretools.vscode-docker"
+                "charliermarsh.ruff",
+                "ms-azuretools.vscode-docker",
+                "ms-toolsai.jupyter",
+                "mhutchie.git-graph"
             ]
         }
     }

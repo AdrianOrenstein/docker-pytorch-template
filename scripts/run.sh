@@ -17,12 +17,29 @@ fi
 IMAGE_TYPE=$1
 shift # Shift to allow additional command arguments after IMAGE_TYPE
 
-# Parse the values from the config.yaml file
-USERNAME=$(yq e '.common.USERNAME' config.yaml)
+# Check if either .images.$IMAGE_TYPE.REGISTRY or .common.USERNAME is empty in config.yaml
+
+# Retrieve values from the YAML file
+REGISTRY_VALUE=$(yq e ".images.${IMAGE_TYPE}.REGISTRY" config.yaml)
+USERNAME_VALUE=$(yq e ".images.${IMAGE_TYPE}.USERNAME" config.yaml)
 IMAGE_NAME=$(yq e ".images.$IMAGE_TYPE.IMAGE_NAME" config.yaml)
 TAG=$(yq e ".images.$IMAGE_TYPE.TAG" config.yaml)
 
-FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
+if [ "$REGISTRY_VALUE" == "null" ]; then
+    REGISTRY_VALUE=$(yq e '.common.REGISTRY' config.yaml)
+fi
+
+if [ "$USERNAME_VALUE" == "null" ]; then
+    USERNAME_VALUE=$(yq e '.common.USERNAME' config.yaml)
+fi
+
+if [ "$TAG" == "null" ]; then
+    TAG="latest"
+fi
+
+FULL_IMAGE_NAME="$REGISTRY_VALUE/$USERNAME_VALUE/$IMAGE_NAME:$TAG"
+
+echo "Using image: $FULL_IMAGE_NAME"
 
 # Check if Docker is running
 if [ "$DOCKER_RUNNING" == true ]
@@ -45,6 +62,7 @@ else
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OSX
         docker run --rm -it \
+            --user $(id -u) \
             $cmp_volumes \
             -w /app \
             --ipc host \
@@ -53,6 +71,7 @@ else
     else
         # Other OS (assuming Linux)
         docker run --rm -it \
+            --user $(id -u) \
             $cmp_volumes \
             -w /app \
             --gpus all \

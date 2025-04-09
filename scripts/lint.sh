@@ -15,15 +15,15 @@ fi
 
 # Parse the values from the config.yaml file
 USERNAME=$(yq e '.common.USERNAME' config.yaml)
-IMAGE_NAME=$(yq e '.images.pytorch.IMAGE_NAME' config.yaml)
-TAG=$(yq e '.images.pytorch.TAG' config.yaml)
+IMAGE_NAME=$(yq e '.common.IMAGE_NAME' config.yaml)
+TAG=$(yq e '.common.TAG' config.yaml)
 
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
 
+echo "Using image: $FULL_IMAGE_NAME"
+
 function run_linting {
-    black src/ && \
-    isort src/ --settings-file=linters/isort.ini && \
-    flake8 src/ --config=linters/flake8.ini
+    pre-commit run --all-files
 }
 
 
@@ -31,8 +31,8 @@ function run_linting {
 if [ "$DOCKER_RUNNING" == true ]
 then
     echo "Inside docker instance"
-    run_linting
-    
+    PYTHONPATH=/app/:$PYTHONPATH run_linting
+
 else
     echo "Starting up docker instance..."
 
@@ -45,16 +45,20 @@ else
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OS X
         docker run --rm -it \
+            --user $(id -u) \
             $cmp_volumes \
             -w /app/ \
+            -e PYTHONPATH=/app/:$PYTHONPATH \
             --ipc host \
             $FULL_IMAGE_NAME \
             /bin/bash -c "${run_linting_cmd}"
     else
         # Other OS (assuming Linux)
         docker run --rm -it \
+            --user $(id -u) \
             $cmp_volumes \
             -w /app/ \
+            -e PYTHONPATH=/app/:$PYTHONPATH \
             --gpus all \
             --ipc host \
             $FULL_IMAGE_NAME \

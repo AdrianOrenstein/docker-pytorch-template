@@ -15,10 +15,12 @@ fi
 
 # Parse the values from the config.yaml file
 USERNAME=$(yq e '.common.USERNAME' config.yaml)
-IMAGE_NAME=$(yq e '.images.pytorch.IMAGE_NAME' config.yaml)
-TAG=$(yq e '.images.pytorch.TAG' config.yaml)
+IMAGE_NAME=$(yq e '.common.IMAGE_NAME' config.yaml)
+TAG=$(yq e '.common.TAG' config.yaml)
 
 FULL_IMAGE_NAME="$USERNAME/$IMAGE_NAME:$TAG"
+
+echo "Using image: $FULL_IMAGE_NAME"
 
 function run_coverage_report {
     coverage run --source=./src -m pytest src/ -m "not benchmark" &&
@@ -29,7 +31,7 @@ function run_coverage_report {
 if [ "$DOCKER_RUNNING" == true ]
 then
     echo "Inside docker instance"
-    run_coverage_report
+    PYTHONPATH=/app/:$PYTHONPATH run_coverage_report
 else
     echo "Starting up docker instance..."
 
@@ -42,16 +44,20 @@ else
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # Mac OS X
         docker run --rm -it \
+            --user $(id -u) \
             $cmp_volumes \
             -w /app/ \
+            -e PYTHONPATH=/app/:$PYTHONPATH \
             --ipc host \
             $FULL_IMAGE_NAME \
             /bin/bash -c "${run_coverage_report_cmd}"
     else
         # Other OS (assuming Linux)
         docker run --rm -it \
+            --user $(id -u) \   
             $cmp_volumes \
             -w /app/ \
+            -e PYTHONPATH=/app/:$PYTHONPATH \
             --gpus all \
             --ipc host \
             $FULL_IMAGE_NAME \

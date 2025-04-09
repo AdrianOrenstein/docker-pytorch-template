@@ -13,7 +13,6 @@ build:
 run:
 	./scripts/run.sh $(filter-out $@, $(MAKECMDGOALS))
 
-# build and run
 runblt: build lint test
 	./scripts/run.sh pytorch $(filter-out $@, $(MAKECMDGOALS))
 
@@ -25,7 +24,6 @@ jupyter:
 
 lint:
 	./scripts/lint.sh
-	@echo "✅✅✅✅✅ Lint is good! ✅✅✅✅✅"
 
 test:
 	./scripts/test.sh
