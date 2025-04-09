@@ -11,6 +11,8 @@ make run pytorch
 make jupyter
 ```
 
+If you want to use the pre-commit hook, run `pre-commit install` inside of the dev container. 
+
 
 # SIF
 Converting docker images into apptainer sifs

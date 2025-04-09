@@ -21,6 +21,11 @@ images:
     TAG: "latest"
     PLATFORMS: "linux/amd64"
 
+  cuda_atari:
+    IMAGE_NAME: "cuda_atari"
+    TAG: "latest"
+    PLATFORMS: "linux/amd64"
+
   apptainer:
     IMAGE_NAME: "apptainer"
     TAG: "latest"
